@@ -1,0 +1,10 @@
+﻿@using Jil
+@{
+    ViewBag.Title = "Lists - Developer";
+}
+
+<h2>Lists</h2>
+
+<pre>
+@JSON.Serialize(ViewBag.Lists, new Options(dateFormat: DateTimeFormat.ISO8601, serializationNameFormat: SerializationNameFormat.CamelCase, prettyPrint: true))
+</pre>

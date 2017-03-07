@@ -1,24 +1,37 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Token";
 }
 
 <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script src="https://api.trello.com/1/client.js?key=dcc9c3541894808931ae00e3b304cb0e"></script>
 
 <script>
-    Trello.authorize({
-        type: "pop",
-        name: "Trello Foreman",
-        scope: { read: true, write: true },
-        expiration: "1hour",
-        success: function () {
-            var token = Trello.token();
-            console.log(token);
-        },
-        error: function () {
-            console.error("Login failed !!");
-        }
-    });
+    function authorize() {
+        Trello.authorize({
+            type: "popup",
+            name: "Trello Foreman",
+            scope: { read: true, write: true },
+            expiration: "never",
+            success: function () {
+                var token = Trello.token();
+                document.getElementById("token").innerText = token;
+            },
+            error: function () {
+                console.error("Login failed !!");
+            }
+        });
+    }
+
+    function deauthorize() {
+        Trello.deauthorize();
+    }
 </script>
 
 <h2>Token</h2>
+
+<div>
+    <input type="button" value="Authorize" onclick="authorize()" /><span id="token"></span>
+</div>
+<div>
+    <input type="button" value="Deauthorize" onclick="deauthorize()" />
+</div>

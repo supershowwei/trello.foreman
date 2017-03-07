@@ -13,6 +13,7 @@ namespace TrelloForeman
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            ManateeTrelloConfig.Configure();
         }
     }
 }
