@@ -27,14 +27,8 @@ namespace TrelloForeman.Controllers
 
                 card.Members.Add(member);
 
-                // 移動到指定的泳道
-                var todoList = new List(TrelloForemanConfig.Instance.ToDoListId, TrelloAuthorization.Default);
-
-                card.List = todoList;
-                card.Position = Position.Top;
-
                 // 發釘釘通知
-                this.Notify(member, card);
+                this.Notify(member, card, (string)triggeredResponse.action.memberCreator.fullName);
             }
 
             /* 不要刪，可以留著 debug 用，儲存 Trello 傳過來的訊息。
@@ -43,7 +37,7 @@ namespace TrelloForeman.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private void Notify(Member member, Card card)
+        private void Notify(Member member, Card card, string creatorFullName)
         {
             try
             {
@@ -61,7 +55,7 @@ namespace TrelloForeman.Controllers
                                 text =
                                 new
                                     {
-                                        content = $"[你强] {card.Name}\r\n\r\n指定 '{member.FullName}' 處理\r\n\r\n{card.ShortUrl}"
+                                        content = $"[你强] {creatorFullName} 回報\r\n{card.Name}\r\n\r\n指定給 {member.FullName} 處理\r\n卡片連結：{card.ShortUrl}"
                                     }
                             },
                         new Options(

@@ -119,9 +119,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Data\remaining_workers">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="App_Data\remaining_workers">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <BrowseToURL>~/App_Data/remaining_workers</BrowseToURL>
+    </Content>
     <Content Include="App_Data\secret.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
