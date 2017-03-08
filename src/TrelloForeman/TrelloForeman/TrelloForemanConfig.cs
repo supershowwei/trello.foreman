@@ -26,6 +26,8 @@ namespace TrelloForeman
 
         public string ToDoListId => this.SecretDocument.Root.Element("ToDoList").Attribute("Id").Value;
 
+        public string VacationListId => this.SecretDocument.Root.Element("VacationList").Attribute("Id").Value;
+
         public string DingtalkWebhookUrl => this.SecretDocument.Root.Element("Dingtalk").Element("WebhookUrl").Value;
 
         private string RemainingWorkersFilePath

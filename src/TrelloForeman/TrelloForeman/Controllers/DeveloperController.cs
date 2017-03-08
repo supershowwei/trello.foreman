@@ -41,6 +41,7 @@ namespace TrelloForeman.Controllers
                                 c.Id,
                                 c.Name,
                                 c.ShortUrl,
+                                c.DueDate,
                                 Members = c.Members.Select(m => new { m.Id, m.FullName })
                             });
 
