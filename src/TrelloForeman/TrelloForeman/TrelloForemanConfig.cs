@@ -24,6 +24,8 @@ namespace TrelloForeman
 
         public string UserToken => this.SecretDocument.Root.Element("UserToken").Value;
 
+        public string ListenerUrl => this.SecretDocument.Root.Element("ListenerUrl").Value;
+
         public string ToDoListId => this.SecretDocument.Root.Element("ToDoList").Attribute("Id").Value;
 
         public string VacationListId => this.SecretDocument.Root.Element("VacationList").Attribute("Id").Value;

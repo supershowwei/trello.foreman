@@ -74,7 +74,7 @@ namespace TrelloForeman.Controllers
             var list = new List(listId);
             var webhook = new Webhook<List>(
                               list,
-                              @"https://trelloforeman.azurewebsites.net/listener/listen",
+                              TrelloForemanConfig.Instance.ListenerUrl,
                               auth: TrelloAuthorization.Default);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
