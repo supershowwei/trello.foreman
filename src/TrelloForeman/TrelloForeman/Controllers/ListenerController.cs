@@ -48,19 +48,19 @@ namespace TrelloForeman.Controllers
             {
                 memberId = TrelloForemanConfig.Instance.FetchOneWorker();
             }
-            while (IsLeaveMember(memberId));
+            while (IsLeaveWorker(memberId));
 
             return memberId;
         }
 
-        private static bool IsLeaveMember(string memberId)
+        private static bool IsLeaveWorker(string workerId)
         {
             var leaveMembers = GetLeaveMembers();
 
             return
                 leaveMembers.Any(
                     m =>
-                        m.Id.Equals(memberId, StringComparison.OrdinalIgnoreCase)
+                        m.Id.Equals(workerId, StringComparison.OrdinalIgnoreCase)
                         && (m.DueDate.Date == DateTime.Now.Date) && (DateTime.Now < m.DueDate));
         }
 
