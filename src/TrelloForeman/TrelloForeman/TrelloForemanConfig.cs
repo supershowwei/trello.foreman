@@ -1,20 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Caching;
-using System.Web.Hosting;
-using System.Xml.Linq;
-
-namespace TrelloForeman
+﻿namespace TrelloForeman
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.Caching;
+    using System.Web.Hosting;
+    using System.Xml.Linq;
+
+    using TrelloForeman.Models;
+
     public class TrelloForemanConfig
     {
         public static readonly TrelloForemanConfig Instance = new TrelloForemanConfig();
+
         private static readonly string SecretDocumentKey = "Secret";
+
         private readonly object lockedObject = new object();
+
         private readonly ObjectCache objectCache = MemoryCache.Default;
-        private List<string> workers = new List<string>();
+
+        private List<Worker> workers = new List<Worker>();
 
         private TrelloForemanConfig()
         {
@@ -22,15 +28,15 @@ namespace TrelloForeman
 
         public string ApplicationKey => this.SecretDocument.Root.Element("ApplicationKey").Value;
 
-        public string UserToken => this.SecretDocument.Root.Element("UserToken").Value;
+        public string DingtalkWebhookUrl => this.SecretDocument.Root.Element("Dingtalk").Element("WebhookUrl").Value;
 
         public string ListenerUrl => this.SecretDocument.Root.Element("ListenerUrl").Value;
 
         public string ToDoListId => this.SecretDocument.Root.Element("ToDoList").Attribute("Id").Value;
 
-        public string VacationListId => this.SecretDocument.Root.Element("VacationList").Attribute("Id").Value;
+        public string UserToken => this.SecretDocument.Root.Element("UserToken").Value;
 
-        public string DingtalkWebhookUrl => this.SecretDocument.Root.Element("Dingtalk").Element("WebhookUrl").Value;
+        public string VacationListId => this.SecretDocument.Root.Element("VacationList").Attribute("Id").Value;
 
         private string RemainingWorkersFilePath
             => Path.Combine(HostingEnvironment.MapPath("~/App_Data"), "remaining_workers");
@@ -48,9 +54,9 @@ namespace TrelloForeman
             }
         }
 
-        public string FetchOneWorker()
+        public Worker FetchOneWorker()
         {
-            string workerId;
+            Worker worker;
             lock (this.lockedObject)
             {
                 if (this.workers.Count == 0)
@@ -58,36 +64,44 @@ namespace TrelloForeman
                     this.CreateWorkers();
                 }
 
-                workerId = this.workers.First();
+                worker = this.workers.First();
 
                 this.workers.RemoveAt(0);
 
-                File.WriteAllText(this.RemainingWorkersFilePath, string.Join("\r\n", this.workers));
+                File.WriteAllText(
+                    this.RemainingWorkersFilePath,
+                    string.Join("\r\n", this.workers.Select(w => $"{w.Id},{w.CellphoneNumber}")));
             }
 
-            return workerId;
+            return worker;
         }
 
         private void CreateWorkers()
         {
-            this.workers = File.ReadAllLines(this.RemainingWorkersFilePath).ToList();
+            this.workers = File.ReadAllLines(this.RemainingWorkersFilePath).Select(
+                line =>
+                    {
+                        var workerRawArray = line.Split(',');
+
+                        return new Worker(workerRawArray[0], workerRawArray[1]);
+                    }).ToList();
 
             if (this.workers.Count == 0)
             {
-                var workerIdList =
+                var workerRoster =
                     this.SecretDocument.Root.Element("Workers")
                         .Elements()
-                        .Select(w => w.Attribute("Id").Value)
+                        .Select(w => new Worker(w.Attribute("Id").Value, w.Attribute("CellphoneNumber").Value))
                         .ToArray();
 
-                var numbers = Enumerable.Range(0, workerIdList.Length).ToList();
+                var numbers = Enumerable.Range(0, workerRoster.Length).ToList();
 
                 var random = new Random(Guid.NewGuid().GetHashCode());
                 while (numbers.Count > 0)
                 {
                     var index = random.Next(numbers.Count);
 
-                    this.workers.Add(workerIdList[numbers[index]]);
+                    this.workers.Add(workerRoster[numbers[index]]);
 
                     numbers.RemoveAt(index);
                 }
