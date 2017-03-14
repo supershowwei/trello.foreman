@@ -77,7 +77,7 @@ namespace TrelloForeman.Controllers
             return leaveMembers;
         }
 
-        private static void Notify(Member member, Card card, string creatorFullName)
+        private static void Notify(Member member, string cellphoneNumber, Card card, string creatorFullName)
         {
             try
             {
