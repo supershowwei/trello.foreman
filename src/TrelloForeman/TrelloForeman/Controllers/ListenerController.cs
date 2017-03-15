@@ -25,7 +25,7 @@ namespace TrelloForeman.Controllers
                 trelloEventHandler.Process(triggeredResponse);
             }
 
-            /* 不要刪，可以留著 debug 用，儲存 Trello 傳過來的訊息。
+            /*// 不要刪，可以留著 debug 用，儲存 Trello 傳過來的訊息。
             this.SaveResults(rawData);
             */
             return new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -45,7 +45,8 @@ namespace TrelloForeman.Controllers
 
             if (listId.Equals(TrelloForemanConfig.Instance.ToVerifyListId)
                 && actionType.Equals("updateCard", StringComparison.OrdinalIgnoreCase)
-                && @event.action.data.listAfter != null)
+                && @event.action.data.listAfter != null
+                && ((string)@event.action.data.listAfter.id).Equals(TrelloForemanConfig.Instance.ToVerifyListId))
             {
                 // 移動卡片到 To Verify
                 return new TrelloMovingCardHandler();

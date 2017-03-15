@@ -1,4 +1,5 @@
-﻿using Jil;
+﻿using System.Linq;
+using Jil;
 using Manatee.Trello;
 using RestSharp;
 using TrelloForeman.Contract;
@@ -10,11 +11,11 @@ namespace TrelloForeman.Logic
         public void Process(dynamic @event)
         {
             var card = new Card((string)@event.action.data.card.id, TrelloAuthorization.Default);
-            var memberCellphoneNumber =
-                TrelloForemanConfig.Instance.FetchMemberCellphoneNumber((string)@event.action.memberCreator.id);
+            var cardCreator = card.Actions.Filter(ActionType.CreateCard).Single().Creator;
+            var memberCellphoneNumber = TrelloForemanConfig.Instance.FetchMemberCellphoneNumber(cardCreator.Id);
 
             // 發釘釘通知
-            Notify((string)@event.action.memberCreator.fullName, memberCellphoneNumber, card);
+            Notify(cardCreator.FullName, memberCellphoneNumber, card);
         }
 
         private static void Notify(string memberName, string cellphoneNumber, Card card)
