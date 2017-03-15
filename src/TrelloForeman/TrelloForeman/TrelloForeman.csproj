@@ -154,12 +154,14 @@
   <ItemGroup>
     <Compile Include="App_Start\ManateeTrelloConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Contract\ITrelloEventHandler.cs" />
     <Compile Include="Controllers\DeveloperController.cs" />
     <Compile Include="Controllers\ListenerController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logic\TrelloCreatingCardHandler.cs" />
     <Compile Include="Models\LeaveMember.cs" />
     <Compile Include="Models\Worker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

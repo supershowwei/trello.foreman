@@ -28,7 +28,7 @@
 
         public string ApplicationKey => this.SecretDocument.Root.Element("ApplicationKey").Value;
 
-        public string DingtalkWebhookUrl => this.SecretDocument.Root.Element("Dingtalk").Element("WebhookUrl").Value;
+        public string DingtalkWebhookUrl => this.SecretDocument.Root.Element("Dingtalk").Element("WebhookUrl").Value;  
 
         public string ListenerUrl => this.SecretDocument.Root.Element("ListenerUrl").Value;
 
@@ -89,8 +89,8 @@
             if (this.workers.Count == 0)
             {
                 var workerRoster =
-                    this.SecretDocument.Root.Element("Workers")
-                        .Elements()
+                    this.SecretDocument.Root.Element("Members")
+                        .Elements("Worker")
                         .Select(w => new Worker(w.Attribute("Id").Value, w.Attribute("CellphoneNumber").Value))
                         .ToArray();
 
