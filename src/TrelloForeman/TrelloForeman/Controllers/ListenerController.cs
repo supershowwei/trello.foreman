@@ -20,7 +20,7 @@ namespace TrelloForeman.Controllers
 
             if (triggeredResponse != null)
             {
-                var trelloEventHandler = GenerateTrelloEventHandler((string)triggeredResponse.action.type);
+                var trelloEventHandler = GenerateTrelloEventHandler(triggeredResponse);
 
                 trelloEventHandler.Process(triggeredResponse);
             }
@@ -31,14 +31,27 @@ namespace TrelloForeman.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private static ITrelloEventHandler GenerateTrelloEventHandler(string actionType)
+        private static ITrelloEventHandler GenerateTrelloEventHandler(dynamic @event)
         {
-            if (actionType.Equals("createCard", StringComparison.OrdinalIgnoreCase))
+            var actionType = (string)@event.action.type;
+            var listId = (string)@event.model.id;
+
+            if (listId.Equals(TrelloForemanConfig.Instance.BacklogListId)
+                && actionType.Equals("createCard", StringComparison.OrdinalIgnoreCase))
             {
+                // 在 What's happening 新增卡片
                 return new TrelloCreatingCardHandler();
             }
 
-            throw new NotImplementedException();
+            if (listId.Equals(TrelloForemanConfig.Instance.ToVerifyListId)
+                && actionType.Equals("updateCard", StringComparison.OrdinalIgnoreCase)
+                && @event.action.data.listAfter != null)
+            {
+                // 移動卡片到 To Verify
+                return new TrelloMovingCardHandler();
+            }
+
+            return new NullTrelloEventHandler();
         }
 
         private string GetRawData()

@@ -161,9 +161,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logic\NullTrelloEventHandler.cs" />
     <Compile Include="Logic\TrelloCreatingCardHandler.cs" />
+    <Compile Include="Logic\TrelloMovingCardHandler.cs" />
     <Compile Include="Models\LeaveMember.cs" />
-    <Compile Include="Models\Worker.cs" />
+    <Compile Include="Models\Member.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrelloForemanConfig.cs" />
   </ItemGroup>

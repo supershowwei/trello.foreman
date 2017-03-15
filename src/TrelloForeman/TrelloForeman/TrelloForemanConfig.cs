@@ -1,15 +1,14 @@
-﻿namespace TrelloForeman
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Caching;
+using System.Web.Hosting;
+using System.Xml.Linq;
+using TrelloForeman.Models;
+
+namespace TrelloForeman
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.Caching;
-    using System.Web.Hosting;
-    using System.Xml.Linq;
-
-    using TrelloForeman.Models;
-
     public class TrelloForemanConfig
     {
         public static readonly TrelloForemanConfig Instance = new TrelloForemanConfig();
@@ -20,7 +19,7 @@
 
         private readonly ObjectCache objectCache = MemoryCache.Default;
 
-        private List<Worker> workers = new List<Worker>();
+        private List<Member> workers = new List<Member>();
 
         private TrelloForemanConfig()
         {
@@ -28,15 +27,17 @@
 
         public string ApplicationKey => this.SecretDocument.Root.Element("ApplicationKey").Value;
 
-        public string DingtalkWebhookUrl => this.SecretDocument.Root.Element("Dingtalk").Element("WebhookUrl").Value;  
+        public string DingtalkWebhookUrl => this.SecretDocument.Root.Element("Dingtalk").Element("WebhookUrl").Value;
 
         public string ListenerUrl => this.SecretDocument.Root.Element("ListenerUrl").Value;
 
-        public string ToDoListId => this.SecretDocument.Root.Element("ToDoList").Attribute("Id").Value;
-
         public string UserToken => this.SecretDocument.Root.Element("UserToken").Value;
 
+        public string BacklogListId => this.SecretDocument.Root.Element("BacklogList").Attribute("Id").Value;
+
         public string VacationListId => this.SecretDocument.Root.Element("VacationList").Attribute("Id").Value;
+
+        public string ToVerifyListId => this.SecretDocument.Root.Element("ToVerifyList").Attribute("Id").Value;
 
         private string RemainingWorkersFilePath
             => Path.Combine(HostingEnvironment.MapPath("~/App_Data"), "remaining_workers");
@@ -54,9 +55,19 @@
             }
         }
 
-        public Worker FetchOneWorker()
+        public string FetchMemberCellphoneNumber(string memberId)
         {
-            Worker worker;
+            return
+                this.SecretDocument.Root.Element("Members")
+                    .Elements()
+                    .Single(m => m.Attribute("Id").Value.Equals(memberId))
+                    .Attribute("CellphoneNumber")
+                    .Value;
+        }
+
+        public Member FetchOneWorker()
+        {
+            Member worker;
             lock (this.lockedObject)
             {
                 if (this.workers.Count == 0)
@@ -83,7 +94,7 @@
                     {
                         var workerRawArray = line.Split(',');
 
-                        return new Worker(workerRawArray[0], workerRawArray[1]);
+                        return new Member(workerRawArray[0], workerRawArray[1]);
                     }).ToList();
 
             if (this.workers.Count == 0)
@@ -91,7 +102,7 @@
                 var workerRoster =
                     this.SecretDocument.Root.Element("Members")
                         .Elements("Worker")
-                        .Select(w => new Worker(w.Attribute("Id").Value, w.Attribute("CellphoneNumber").Value))
+                        .Select(w => new Member(w.Attribute("Id").Value, w.Attribute("CellphoneNumber").Value))
                         .ToArray();
 
                 var numbers = Enumerable.Range(0, workerRoster.Length).ToList();
