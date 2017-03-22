@@ -14,15 +14,20 @@ namespace TrelloForeman.Logic
     {
         public void Process(dynamic @event)
         {
-            // 指定一個非休假人員去處理
-            var worker = GetOneNonLeaveWorker();
+            // 檢查卡片是否已經有 Member
             var card = new Card((string)@event.action.data.card.id, TrelloAuthorization.Default);
-            var trelloMember = new Manatee.Trello.Member(worker.Id, TrelloAuthorization.Default);
 
-            card.Members.Add(trelloMember);
+            if (card.Members.Count() == 0)
+            {
+                // 指定一個非休假人員去處理
+                var worker = GetOneNonLeaveWorker();
+                var trelloMember = new Manatee.Trello.Member(worker.Id, TrelloAuthorization.Default);
 
-            // 發釘釘通知
-            Notify(trelloMember, worker.CellphoneNumber, card, (string)@event.action.memberCreator.fullName);
+                card.Members.Add(trelloMember);
+
+                // 發釘釘通知
+                Notify(trelloMember, worker.CellphoneNumber, card, (string)@event.action.memberCreator.fullName);
+            }
         }
 
         private static Member GetOneNonLeaveWorker()

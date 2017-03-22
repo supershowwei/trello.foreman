@@ -180,6 +180,7 @@
     <Content Include="Views\Developer\Cards.cshtml" />
     <Content Include="Views\Developer\MembersOfCard.cshtml" />
     <Content Include="Views\Developer\MembersOfBoard.cshtml" />
+    <Content Include="Views\Developer\Card.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

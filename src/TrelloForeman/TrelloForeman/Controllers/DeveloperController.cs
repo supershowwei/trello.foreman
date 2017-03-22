@@ -18,6 +18,16 @@ namespace TrelloForeman.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
+        [Route("~/card/{cardId}")]
+        public ActionResult Card(string cardId)
+        {
+            var card = new Card(cardId, TrelloAuthorization.Default);
+
+            this.ViewBag.Card = new { card.Id, card.Name, card.ShortUrl, card.DueDate, card.Members };
+
+            return this.View();
+        }
+
         [Route("~/list/{listId}/cards")]
         public ActionResult Cards(string listId)
         {

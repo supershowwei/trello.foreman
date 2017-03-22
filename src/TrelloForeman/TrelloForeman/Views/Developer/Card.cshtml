@@ -1,0 +1,11 @@
+﻿@using Jil
+
+@{
+    ViewBag.Title = "Card - Developer";
+}
+
+<h2>Card</h2>
+
+<pre>
+@JSON.Serialize(ViewBag.Card, new Options(dateFormat: DateTimeFormat.ISO8601, serializationNameFormat: SerializationNameFormat.CamelCase, prettyPrint: true))
+</pre>
