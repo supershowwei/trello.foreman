@@ -36,23 +36,55 @@ namespace TrelloForeman.Controllers
             var actionType = (string)@event.action.type;
             var listId = (string)@event.model.id;
 
-            if (listId.Equals(TrelloForemanConfig.Instance.BacklogListId)
-                && actionType.Equals("createCard", StringComparison.OrdinalIgnoreCase))
+            if (IsBacklogAdded(listId, actionType))
             {
                 // 在 What's happening 新增卡片
-                return new TrelloCreatingCardHandler();
+                return new TrelloCardAddedHandler();
             }
 
-            if (listId.Equals(TrelloForemanConfig.Instance.ToVerifyListId)
-                && actionType.Equals("updateCard", StringComparison.OrdinalIgnoreCase)
-                && @event.action.data.listAfter != null
-                && ((string)@event.action.data.listAfter.id).Equals(TrelloForemanConfig.Instance.ToVerifyListId))
+            if (IsBacklogNeedVerify(listId, actionType, @event.action.data.listAfter))
             {
                 // 移動卡片到 To Verify
-                return new TrelloMovingCardHandler();
+                return new TrelloCardMovedHandler();
+            }
+
+            if (IsBacklogDone(listId, actionType, @event.action.data.listAfter))
+            {
+                return new TrelloCardDoneHandler();
             }
 
             return new NullTrelloEventHandler();
+        }
+
+        private static bool IsBacklogAdded(string listId, string actionType)
+        {
+            if (string.IsNullOrEmpty(TrelloForemanConfig.Instance.BacklogListId)) return false;
+            if (!listId.Equals(TrelloForemanConfig.Instance.BacklogListId)) return false;
+            if (!actionType.Equals("createCard", StringComparison.OrdinalIgnoreCase)) return false;
+
+            return true;
+        }
+
+        private static bool IsBacklogNeedVerify(string listId, string actionType, dynamic listAfter)
+        {
+            if (string.IsNullOrEmpty(TrelloForemanConfig.Instance.ToVerifyListId)) return false;
+            if (!listId.Equals(TrelloForemanConfig.Instance.ToVerifyListId)) return false;
+            if (!actionType.Equals("updateCard", StringComparison.OrdinalIgnoreCase)) return false;
+            if (listAfter == null) return false;
+            if (!((string)listAfter.id).Equals(TrelloForemanConfig.Instance.ToVerifyListId)) return false;
+
+            return true;
+        }
+
+        private static bool IsBacklogDone(string listId, string actionType, dynamic listAfter)
+        {
+            if (string.IsNullOrEmpty(TrelloForemanConfig.Instance.DoneListId)) return false;
+            if (!listId.Equals(TrelloForemanConfig.Instance.DoneListId)) return false;
+            if (!actionType.Equals("updateCard", StringComparison.OrdinalIgnoreCase)) return false;
+            if (listAfter == null) return false;
+            if (!((string)listAfter.id).Equals(TrelloForemanConfig.Instance.DoneListId)) return false;
+
+            return true;
         }
 
         private string GetRawData()

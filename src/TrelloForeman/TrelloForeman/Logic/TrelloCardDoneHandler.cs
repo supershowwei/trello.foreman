@@ -6,19 +6,17 @@ using TrelloForeman.Contract;
 
 namespace TrelloForeman.Logic
 {
-    public class TrelloMovingCardHandler : ITrelloEventHandler
+    public class TrelloCardDoneHandler : ITrelloEventHandler
     {
         public void Process(dynamic @event)
         {
             var card = new Card((string)@event.action.data.card.id, TrelloAuthorization.Default);
-            var cardCreator = card.Actions.Filter(ActionType.CreateCard).Single().Creator;
-            var memberCellphoneNumber = TrelloForemanConfig.Instance.FetchMemberCellphoneNumber(cardCreator.Id);
 
             // 發釘釘通知
-            Notify(cardCreator.FullName, memberCellphoneNumber, card);
+            Notify(card);
         }
 
-        private static void Notify(string memberName, string cellphoneNumber, Card card)
+        private static void Notify(Card card)
         {
             try
             {
@@ -33,9 +31,7 @@ namespace TrelloForeman.Logic
                         new
                             {
                                 msgtype = "text",
-                                text =
-                                new { content = $"[跳舞] 請 {memberName} 檢查\r\n{card.Name}\r\n\r\n卡片連結：{card.ShortUrl}" },
-                                at = new { atMobiles = new[] { cellphoneNumber }, isAtAll = false }
+                                text = new { content = $"[跳舞] 更新系統功能／調整系統設定\r\n{card.Name}\r\n\r\n卡片連結：{card.ShortUrl}" }
                             },
                         new Options(
                             dateFormat: DateTimeFormat.ISO8601,

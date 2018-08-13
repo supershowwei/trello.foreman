@@ -10,7 +10,7 @@ using Member = TrelloForeman.Models.Member;
 
 namespace TrelloForeman.Logic
 {
-    public class TrelloCreatingCardHandler : ITrelloEventHandler
+    public class TrelloCardAddedHandler : ITrelloEventHandler
     {
         public void Process(dynamic @event)
         {

@@ -39,6 +39,8 @@ namespace TrelloForeman
 
         public string ToVerifyListId => this.SecretDocument.Root.Element("ToVerifyList").Attribute("Id").Value;
 
+        public string DoneListId => this.SecretDocument.Root.Element("DoneList").Attribute("Id").Value;
+
         private string RemainingWorkersFilePath
             => Path.Combine(HostingEnvironment.MapPath("~/App_Data"), "remaining_workers");
 
