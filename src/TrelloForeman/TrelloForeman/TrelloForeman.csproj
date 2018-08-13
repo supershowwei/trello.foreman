@@ -124,10 +124,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <BrowseToURL>~/App_Data/remaining_workers</BrowseToURL>
     </Content>
-    <None Include="App_Data\網站錯誤通知-secret.xml" />
     <Content Include="App_Data\secret.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="App_Data\網站錯誤通知-secret.xml" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -184,6 +184,7 @@
     <Content Include="Views\Developer\MembersOfCard.cshtml" />
     <Content Include="Views\Developer\MembersOfBoard.cshtml" />
     <Content Include="Views\Developer\Card.cshtml" />
+    <Content Include="Views\Developer\Boards.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

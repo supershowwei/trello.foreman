@@ -5,7 +5,6 @@ using Manatee.Trello;
 
 namespace TrelloForeman.Controllers
 {
-    [RoutePrefix("developer")]
     public class DeveloperController : Controller
     {
         [Route("~/card/{cardId}/assign/{memberId}")]
@@ -103,6 +102,16 @@ namespace TrelloForeman.Controllers
             card.Position = Position.Top;
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        [Route("~/member/{memberId}/boards")]
+        public ActionResult Boards(string memberId)
+        {
+            var member = new Member(memberId, TrelloAuthorization.Default);
+
+            this.ViewBag.Boards = member.Boards.Select(x => new { x.Id, x.Name });
+
+            return this.View();
         }
     }
 }
