@@ -176,11 +176,14 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Token\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Developer\Lists.cshtml" />
-    <Content Include="Views\Developer\Cards.cshtml" />
+    <Content Include="Views\Developer\ListsOfBoard.cshtml" />
+    <Content Include="Views\Developer\CardsOfList.cshtml" />
     <Content Include="Views\Developer\MembersOfCard.cshtml" />
     <Content Include="Views\Developer\MembersOfBoard.cshtml" />
     <Content Include="Views\Developer\Card.cshtml" />
+    <Content Include="Views\Developer\BoardsOfMember.cshtml" />
+    <Content Include="Views\Developer\List.cshtml" />
+    <Content Include="Views\Developer\ActionsOfList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

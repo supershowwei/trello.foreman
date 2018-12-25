@@ -16,6 +16,9 @@ namespace TrelloForeman.Controllers
         {
             var rawData = this.GetRawData();
 
+            /*// 不要刪，可以留著 debug 用，儲存 Trello 傳過來的訊息。
+            this.SaveResults(rawData);*/
+
             var triggeredResponse = string.IsNullOrEmpty(rawData) ? null : JSON.DeserializeDynamic(rawData);
 
             if (triggeredResponse != null)
@@ -25,9 +28,6 @@ namespace TrelloForeman.Controllers
                 trelloEventHandler.Process(triggeredResponse);
             }
 
-            /*// 不要刪，可以留著 debug 用，儲存 Trello 傳過來的訊息。
-            this.SaveResults(rawData);
-            */
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
